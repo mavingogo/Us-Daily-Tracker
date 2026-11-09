@@ -1,0 +1,48 @@
+{% extends "base.html" %}{% block body %}
+<div style="margin-bottom: 18px;">
+  <h1>Tonight’s <span class="gradient-text">Check-in</span> 💌</h1>
+  <p class="sub">Reflect together and end the day on a sweet note.</p>
+</div>
+
+<div class="card">
+  <form method="post">
+    <label>How was your day?</label>
+    <div class="moods">
+      {% for i in range(1,6) %}
+      <input type="radio" name="mood" id="m{{ i }}" value="{{ i }}" {{ 'checked' if mine and mine['mood']==i }}>
+      <label for="m{{ i }}">{{ MOODS[i] }}</label>
+      {% endfor %}
+    </div>
+
+    <label>One highlight from today</label>
+    <textarea name="good" maxlength="300" placeholder="Something that made you smile...">{{ mine['good'] if mine }}</textarea>
+
+    <label>One thing I appreciated about you</label>
+    <textarea name="thanks" maxlength="300" placeholder="A little appreciation for your partner...">{{ mine['thanks'] if mine }}</textarea>
+
+    <label>One goal or thought for tomorrow</label>
+    <textarea name="tmr" maxlength="300" placeholder="Looking ahead to tomorrow...">{{ mine['tmr'] if mine }}</textarea>
+
+    <div class="row" style="margin-top: 16px;">
+      <button class="btn">Save check-in ✨</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Recent reflections</h2>
+  {% if not recent %}<p class="mute" style="margin: 8px 0;">No check-ins yet. Share your first reflection tonight!</p>{% endif %}
+  {% for c in recent %}
+  <div class="entry {{ 'me' if c['uid']==g.user['id'] else 'her' }}">
+    <p style="font-weight: 700;">
+      <span class="who">{{ c['name'] }}</span>
+      <span class="k" style="font-weight: 400; margin-left: 4px;">{{ c['date'] }}</span>
+      <span style="font-size: 1.3rem; margin-left: 6px;">{{ MOODS[c['mood']] }}</span>
+    </p>
+    {% if c['good'] %}<p><span class="k">Highlight:</span> {{ c['good'] }}</p>{% endif %}
+    {% if c['thanks'] %}<p><span class="k">Appreciated:</span> {{ c['thanks'] }}</p>{% endif %}
+    {% if c['tmr'] %}<p><span class="k">Tomorrow:</span> {{ c['tmr'] }}</p>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

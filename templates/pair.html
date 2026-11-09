@@ -1,0 +1,31 @@
+{% extends "base.html" %}{% block body %}
+<div style="margin-bottom: 20px;">
+  <h1>Hi {{ g.user['name'] }}, <span class="gradient-text">let’s pair!</span> 👋</h1>
+  <p class="sub">Connect with your partner. One of you creates your couple space; the other joins using the invite code.</p>
+</div>
+
+<div class="card">
+  <h2>Start a new space</h2>
+  <p class="mute" style="margin: 0 0 14px;">Generate an invite code and share it with your love.</p>
+  <form method="post">
+    <input type="hidden" name="action" value="create">
+    <button class="btn" style="width: 100%;">Create our space ✨</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Join your partner’s space</h2>
+  <p class="mute" style="margin: 0 0 14px;">Enter the 6-character code your partner sent you.</p>
+  <form method="post">
+    <input type="hidden" name="action" value="join">
+    <input name="code" maxlength="6" placeholder="INVITE CODE" style="text-align:center;letter-spacing:.35em;text-transform:uppercase;font-weight:700;font-size:1.15rem;" required autocomplete="off">
+    <div class="row" style="margin-top: 14px;">
+      <button class="btn btn-blue" style="width: 100%;">Join space 💌</button>
+    </div>
+  </form>
+</div>
+
+<p class="mute" style="text-align: center; margin-top: 24px;">
+  <a href="{{ url_for('logout') }}" class="sub-link">Sign out</a>
+</p>
+{% endblock %}

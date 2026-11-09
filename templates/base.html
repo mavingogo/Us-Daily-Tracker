@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon-192.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <title>Us, Daily</title>
+
+  <script>
+    (function () {
+      var saved = localStorage.getItem('us_theme');
+      var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-gradient: radial-gradient(circle at 0% -5%, rgba(56, 189, 248, 0.16) 0%, rgba(37, 99, 235, 0.08) 35%, transparent 60%),
+                     radial-gradient(circle at 68% 4%, rgba(52, 211, 153, 0.22) 0%, rgba(16, 185, 129, 0.10) 40%, transparent 60%),
+                     radial-gradient(circle at 95% 85%, rgba(56, 189, 248, 0.08) 0%, transparent 45%);
+      --card: #ffffff;
+      --card-border: rgba(226, 232, 240, 0.85);
+      --ink: #0b132b;
+      --mute: #64748b;
+      --line: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-glow: rgba(37, 99, 235, 0.28);
+      --secondary: #10b981;
+      --secondary-glow: rgba(16, 185, 129, 0.28);
+      --me: #2563eb;
+      --me-glow: rgba(37, 99, 235, 0.25);
+      --her: #0ea5e9;
+      --ok: #10b981;
+      --grad-text: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+      --btn-grad: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+      --btn-hover-grad: linear-gradient(135deg, #1d4ed8 0%, #059669 100%);
+      --card-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.02);
+      color-scheme: light;
+    }
+
+    [data-theme="dark"] {
+      --bg: #070b14;
+      --bg-gradient: radial-gradient(circle at 0% -5%, rgba(56, 189, 248, 0.18) 0%, rgba(37, 99, 235, 0.14) 35%, transparent 60%),
+                     radial-gradient(circle at 68% 4%, rgba(52, 211, 153, 0.18) 0%, rgba(16, 185, 129, 0.10) 40%, transparent 60%),
+                     radial-gradient(circle at 95% 85%, rgba(56, 189, 248, 0.08) 0%, transparent 45%);
+      --card: #0f172a;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --ink: #f8fafc;
+      --mute: #94a3b8;
+      --line: #1e293b;
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --secondary: #34d399;
+      --secondary-glow: rgba(52, 211, 153, 0.35);
+      --me: #38bdf8;
+      --me-glow: rgba(56, 189, 248, 0.3);
+      --her: #34d399;
+      --ok: #34d399;
+      --grad-text: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
+      --btn-grad: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+      --btn-hover-grad: linear-gradient(135deg, #3b82f6 0%, #34d399 100%);
+      --card-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.45);
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg);
+      background-image: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 8px 18px 105px;
+      padding-top: calc(8px + env(safe-area-inset-top, 0px));
+    }
+
+    /* Top Brand & Header */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0 16px;
+      margin-bottom: 8px;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand-link:hover {
+      text-decoration: none;
+    }
+
+    /* AgenceX-inspired 3-dot organic logo */
+    .logo-mark {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: inline-block;
+      flex: none;
+    }
+
+    .logo-dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .dot-blue {
+      width: 13px;
+      height: 13px;
+      background: #2563eb;
+      top: 0;
+      left: 0;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+    }
+
+    .dot-green {
+      width: 14px;
+      height: 14px;
+      background: #10b981;
+      top: 2px;
+      right: 0;
+      border-radius: 50% 50% 50% 2px;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    }
+
+    .dot-yellow {
+      width: 11px;
+      height: 11px;
+      background: #f59e0b;
+      bottom: 0;
+      left: 5px;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Clean Sun/Moon theme toggle */
+    .theme-btn {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.25s ease;
+      padding: 0;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: rotate(20deg) scale(1.06);
+    }
+
+    [data-theme="dark"] .sun-icon {
+      display: none;
+    }
+
+    [data-theme="dark"] .moon-icon {
+      display: block !important;
+      color: #38bdf8;
+    }
+
+    /* Headings & Typography */
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.15;
+      color: var(--ink);
+      margin: 10px 0 6px;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin: 0 0 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gradient-text {
+      background: var(--grad-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .sub,
+    .mute {
+      color: var(--mute);
+      font-size: 0.92rem;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    .sub-link {
+      color: var(--mute);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .sub-link:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    /* Modern Rounded Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .me {
+      --c: var(--me);
+    }
+
+    .her {
+      --c: var(--her);
+    }
+
+    .who {
+      color: var(--c, var(--ink));
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    /* Progress bar */
+    .bar {
+      height: 9px;
+      background: var(--line);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin: 10px 0 14px;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+      border-radius: 9999px;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Goal / Habit Items */
+    .item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+      font-size: 0.98rem;
+    }
+
+    .item form {
+      margin: 0;
+    }
+
+    .item>span {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .item.done>span {
+      text-decoration: line-through;
+      color: var(--mute);
+    }
+
+    .chk {
+      font-size: 1.45rem;
+      color: var(--c, var(--primary));
+      border: 0;
+      background: none;
+      padding: 0 4px;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .chk:hover {
+      transform: scale(1.2);
+    }
+
+    .x {
+      border: 0;
+      background: none;
+      color: var(--mute);
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .x:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Form Controls */
+    input,
+    textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 72px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--mute);
+      letter-spacing: -0.01em;
+      margin: 12px 0 6px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* AgenceX Pill Buttons */
+    .btn {
+      border: 0;
+      background: var(--btn-grad);
+      color: #ffffff;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: -0.01em;
+      padding: 11px 22px;
+      border-radius: 9999px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 8px 20px -2px var(--primary-glow);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--btn-hover-grad);
+      box-shadow: 0 12px 26px -2px var(--primary-glow);
+      transform: translateY(-1.5px);
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-blue {
+      background: #2563eb;
+      box-shadow: 0 8px 20px -2px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-blue:hover {
+      background: #1d4ed8;
+      box-shadow: 0 12px 24px -2px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-sm {
+      padding: 7px 16px;
+      font-size: 0.82rem;
+    }
+
+    /* Stats Grid */
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stats div {
+      flex: 1;
+      min-width: 100px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .stats b {
+      display: block;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--c, var(--ink));
+    }
+
+    .stats small {
+      color: var(--mute);
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .entry {
+      border-top: 1px solid var(--line);
+      padding: 12px 0;
+    }
+
+    .entry p {
+      margin: 4px 0;
+    }
+
+    .k {
+      color: var(--mute);
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .code {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: .4em;
+      text-align: center;
+      color: var(--primary);
+      background: var(--bg);
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      margin: 10px 0;
+    }
+
+    .flash {
+      background: var(--card);
+      border: 1px solid var(--primary);
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      font-weight: 500;
+    }
+
+    /* Mood selector */
+    .moods {
+      display: flex;
+      gap: 8px;
+    }
+
+    .moods input {
+      display: none;
+    }
+
+    .moods label {
+      flex: 1;
+      text-align: center;
+      font-size: 1.6rem;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 8px 0;
+      margin: 0;
+      cursor: pointer;
+      background: var(--bg);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .moods input:checked+label {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.1);
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    /* Floating Pill Navigation Dock */
+    nav {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 620px;
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 9999px;
+      box-shadow: 0 14px 40px -4px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+      padding: 6px;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    nav a {
+      flex: 1;
+      text-align: center;
+      padding: 8px 2px;
+      color: var(--mute);
+      text-decoration: none;
+      font-size: .74rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    nav a:hover {
+      color: var(--ink);
+    }
+
+    nav a.on {
+      color: var(--primary);
+      background: rgba(37, 99, 235, 0.08);
+      font-weight: 700;
+    }
+
+    [data-theme="dark"] nav a.on {
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.16);
+    }
+
+    nav a span {
+      display: block;
+      font-size: 1.25rem;
+      line-height: 1;
+      transition: transform 0.2s ease;
+    }
+
+    nav a.on span {
+      transform: scale(1.15);
+      filter: drop-shadow(0 2px 6px var(--primary-glow));
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header class="top-nav">
+      <a href="{{ url_for('goals') if g.user and g.user['couple_id'] else url_for('login') }}" class="brand-link">
+        <div class="logo-mark">
+          <span class="logo-dot dot-blue"></span>
+          <span class="logo-dot dot-green"></span>
+          <span class="logo-dot dot-yellow"></span>
+        </div>
+        <span class="brand-title">Us, <span class="gradient-text">Daily</span></span>
+      </a>
+
+      <div class="top-actions">
+        {% if g.user and g.user['couple_id'] %}
+        <a href="{{ url_for('logout') }}" class="sub-link" style="font-size:0.85rem; font-weight:600; margin-right:4px;">Sign out</a>
+        {% endif %}
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle dark/light mode" title="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="net" class="flash" hidden></div>
+    {% for m in get_flashed_messages() %}<div class="flash">{{ m }}</div>{% endfor %}
+    {% block body %}{% endblock %}
+  </main>
+
+  {% if g.user and g.user['couple_id'] %}
+  <nav>
+    {% for ep,icon,label in
+    [('goals','✅','Goals'),('messages','💬','Chat'),('study','📚','Study'),('checkin','💌','Check-in'),('savings','💰','Savings'),('week','📊','Week')]
+    %}
+    <a href="{{ url_for(ep) }}" class="{{ 'on' if request.endpoint==ep }}"><span>{{ icon }}</span>{{ label }}</a>
+    {% endfor %}
+  </nav>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% endif %}
+
+  <script>
+    (function () {
+      var toggle = document.getElementById('theme-toggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', function () {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var newTheme = isDark ? 'light' : 'dark';
+        if (newTheme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+        localStorage.setItem('us_theme', newTheme);
+      });
+    })();
+  </script>
+</body>
+
+</html>

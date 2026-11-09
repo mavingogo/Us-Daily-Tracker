@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+us_daily.db
+.secret_key
+.env

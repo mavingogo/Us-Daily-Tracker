@@ -1,0 +1,78 @@
+{% extends "base.html" %}{% block body %}
+<div style="margin-bottom: 18px;">
+  <h1>Today’s <span class="gradient-text">Goals</span> ✨</h1>
+  <p class="sub">{{ label }}</p>
+</div>
+
+{% if invite %}
+<div class="card her" style="border-left: 4px solid var(--primary);">
+  <b>Invite your partner</b>
+  <p class="mute" style="margin: 4px 0 8px;">They create an account, choose “Join”, and enter:</p>
+  <div class="code">{{ invite }}</div>
+</div>
+{% endif %}
+
+{% for x in data %}
+<div class="card {{ 'me' if x.mine else 'her' }}">
+  <h2>
+    <span class="who">{{ x.p['name'] }}{{ ' (you)' if x.mine }}</span>
+    <span class="mute" style="font-weight: 600; font-size: 0.9rem;">{{ x.done }}/{{ x.total }} completed</span>
+  </h2>
+  <div class="bar"><i style="width:{{ x.pct }}%"></i></div>
+  {% if not x.total %}<p class="mute" style="margin: 10px 0;">No goals set yet for today.</p>{% endif %}
+
+  {% for it in x.goals %}
+  <div class="item {{ 'done' if it['done'] }}">
+    {% if x.mine %}
+    <form method="post" action="{{ url_for('goal_toggle', gid=it['id']) }}">
+      <button class="chk">{{ '☑' if it['done'] else '☐' }}</button>
+    </form>
+    {% else %}
+    <span class="chk" style="flex:none">{{ '☑' if it['done'] else '☐' }}</span>
+    {% endif %}
+    <span>{{ it['text'] }}</span>
+    {% if x.mine %}
+    <form method="post" action="{{ url_for('goal_delete', gid=it['id']) }}">
+      <button class="x" aria-label="Delete">×</button>
+    </form>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  {% for it in x.habits %}
+  <div class="item {{ 'done' if it['done'] }}">
+    {% if x.mine %}
+    <form method="post" action="{{ url_for('habit_toggle', hid=it['id']) }}">
+      <button class="chk">{{ '☑' if it['done'] else '☐' }}</button>
+    </form>
+    {% else %}
+    <span class="chk" style="flex:none">{{ '☑' if it['done'] else '☐' }}</span>
+    {% endif %}
+    <span>🔁 {{ it['text'] }}</span>
+    {% if x.mine %}
+    <form method="post" action="{{ url_for('habit_delete', hid=it['id']) }}" onsubmit="return confirm('Remove this daily habit?')">
+      <button class="x" aria-label="Delete habit">×</button>
+    </form>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endfor %}
+
+<div class="card">
+  <h2>Add a goal for today</h2>
+  <form method="post" action="{{ url_for('goal_add') }}" class="row" style="margin:0">
+    <input type="text" name="text" maxlength="120" placeholder="e.g. Finish reading chapter 4" required autocomplete="off">
+    <button class="btn">Add goal</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Daily habits</h2>
+  <p class="mute" style="margin: 0 0 10px;">These repeat every day and reset automatically each morning.</p>
+  <form method="post" action="{{ url_for('habit_add') }}" class="row" style="margin:0">
+    <input type="text" name="text" maxlength="80" placeholder="e.g. Morning 20m walk" required autocomplete="off">
+    <button class="btn">Add habit</button>
+  </form>
+</div>
+{% endblock %}

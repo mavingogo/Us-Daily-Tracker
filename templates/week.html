@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block body %}
+<div style="margin-bottom: 18px;">
+  <h1>Weekly <span class="gradient-text">Overview</span> 📊</h1>
+  <p class="sub">The last 7 days, side by side.</p>
+</div>
+
+{% for x in out %}
+<div class="card {{ 'me' if x.mine else 'her' }}">
+  <h2>
+    <span class="who">{{ x.p['name'] }}{{ ' (you)' if x.mine }}</span>
+    <span class="mute" style="font-weight: 500; font-size: 0.85rem;">Last 7 days</span>
+  </h2>
+  <div class="stats">
+    <div><b>{{ x.goals_done }}/{{ x.goals_total }}</b><small>goals done</small></div>
+    <div><b>{{ x.habits }}</b><small>habits ticked</small></div>
+    <div><b>{{ x.study|mins }}</b><small>studied{{ ' · mostly ' ~ x.top if x.top }}</small></div>
+    <div><b>{{ x.checkins }}/7</b><small>check-ins{{ ' · mood ' ~ x.mood if x.mood }}</small></div>
+    <div><b>{{ cur }}{{ ' ' if cur }}{{ x.saved|money }}</b><small>saved</small></div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

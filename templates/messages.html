@@ -1,0 +1,416 @@
+{% extends "base.html" %}{% block body %}
+<style>
+  .chat-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 14px 18px;
+    box-shadow: var(--card-shadow);
+  }
+  .chat-header .partner-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .chat-header .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 12px var(--primary-glow);
+  }
+  .chat-header h1 {
+    font-size: 1.15rem;
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+  .chat-header .status {
+    font-size: 0.8rem;
+    color: var(--mute);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16,185,129,0.7);
+  }
+  .chat-box {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 18px;
+    height: 440px;
+    max-height: 54vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: var(--card-shadow);
+    scroll-behavior: smooth;
+  }
+  .msg-row {
+    display: flex;
+    width: 100%;
+  }
+  .msg-row.mine {
+    justify-content: flex-end;
+  }
+  .msg-row.theirs {
+    justify-content: flex-start;
+  }
+  .msg-bubble {
+    max-width: 78%;
+    padding: 11px 16px;
+    font-size: 0.94rem;
+    line-height: 1.48;
+    word-break: break-word;
+    position: relative;
+  }
+  .msg-row.mine .msg-bubble {
+    background: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+    color: #ffffff;
+    border-radius: 20px 20px 4px 20px;
+    box-shadow: 0 6px 18px -2px var(--primary-glow);
+  }
+  .msg-row.theirs .msg-bubble {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: 20px 20px 20px 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  }
+  .msg-sender {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--her);
+    margin-bottom: 3px;
+    letter-spacing: -0.01em;
+  }
+  .msg-text {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+  .msg-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    font-size: 0.72rem;
+  }
+  .msg-row.mine .msg-meta {
+    justify-content: flex-end;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .msg-row.theirs .msg-meta {
+    justify-content: flex-start;
+    color: var(--mute);
+  }
+  .msg-del-btn {
+    background: none;
+    border: 0;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.15s;
+  }
+  .msg-del-btn:hover {
+    color: #ffffff;
+  }
+  .chat-empty {
+    text-align: center;
+    color: var(--mute);
+    margin: auto;
+    padding: 30px 16px;
+  }
+  .chat-empty .empty-icon {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+  }
+  .quick-pills {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .quick-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .quick-pill {
+    flex: none;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 9999px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .quick-pill:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
+  }
+  .chat-input-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 9999px;
+    padding: 6px 8px 6px 18px;
+    box-shadow: var(--card-shadow);
+  }
+  .chat-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 0;
+  }
+  .chat-form input {
+    flex: 1;
+    margin: 0;
+    border: 0;
+    background: none;
+    padding: 10px 4px;
+    font-size: 0.95rem;
+    box-shadow: none !important;
+  }
+  .chat-form input:focus {
+    border: 0;
+    outline: none;
+    box-shadow: none !important;
+  }
+  .chat-send-btn {
+    flex: none;
+    padding: 9px 20px;
+    border-radius: 9999px;
+    font-size: 0.88rem;
+  }
+</style>
+
+<div class="chat-wrap">
+  <div class="chat-header">
+    <div class="partner-info">
+      <div class="avatar">{{ (partner['name'][:1] if partner else 'U')|upper }}</div>
+      <div>
+        <h1>{{ partner['name'] if partner else 'Us Daily Chat' }}</h1>
+        <div class="status">
+          {% if partner %}
+          <span class="status-dot"></span> In sync with your partner
+          {% else %}
+          <span class="status-dot" style="background:#f59e0b"></span> Waiting for partner to join
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div style="font-size: 1.3rem;">💬</div>
+  </div>
+
+  {% if invite %}
+  <div class="card her" style="border-left: 4px solid var(--primary); margin: 0;">
+    <b>Invite your partner to chat</b>
+    <p class="mute" style="margin: 4px 0 6px;">Have them create an account, select "Join", and enter:</p>
+    <div class="code">{{ invite }}</div>
+  </div>
+  {% endif %}
+
+  <!-- Chat stream container -->
+  <div id="chat-box" class="chat-box">
+    {% if not messages %}
+    <div id="chat-empty" class="chat-empty">
+      <div class="empty-icon">💌</div>
+      <b style="font-size: 1.05rem;">Start your conversation</b>
+      <p class="mute" style="margin: 4px 0 0;">Leave a sweet morning note, send a cute reminder, or check in with each other.</p>
+    </div>
+    {% endif %}
+
+    {% for m in messages %}
+    {% set is_mine = (m['user_id'] == g.user['id']) %}
+    <div class="msg-row {{ 'mine' if is_mine else 'theirs' }}" data-id="{{ m['id'] }}">
+      <div class="msg-bubble">
+        {% if not is_mine %}
+        <div class="msg-sender">{{ m['name'] }}</div>
+        {% endif %}
+        <p class="msg-text">{{ m['text'] }}</p>
+        <div class="msg-meta">
+          <span>{{ m['created_at']|time_ago }}</span>
+          {% if is_mine %}
+          <form method="post" action="{{ url_for('message_delete', mid=m['id']) }}" style="margin:0; display:inline;" onsubmit="return confirm('Delete this message?');">
+            <button class="msg-del-btn" title="Delete message" aria-label="Delete message">×</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Quick suggestion love pills -->
+  <div class="quick-pills">
+    <button type="button" class="quick-pill" onclick="sendQuick(this.innerText)">❤️ Love you so much</button>
+    <button type="button" class="quick-pill" onclick="sendQuick(this.innerText)">Thinking of you 🥰</button>
+    <button type="button" class="quick-pill" onclick="sendQuick(this.innerText)">Proud of you ✨</button>
+    <button type="button" class="quick-pill" onclick="sendQuick(this.innerText)">Miss you 💕</button>
+    <button type="button" class="quick-pill" onclick="sendQuick(this.innerText)">Good luck today! 🍀</button>
+    <button type="button" class="quick-pill" onclick="sendQuick(this.innerText)">Can’t wait to see you ☕</button>
+  </div>
+
+  <!-- Modern pill input dock -->
+  <div class="chat-input-card">
+    <form id="chat-form" method="post" action="{{ url_for('message_send') }}" class="chat-form">
+      <input type="text" id="msg-input" name="text" maxlength="1000" placeholder="Type a message to your partner..." required autocomplete="off">
+      <button type="submit" class="btn chat-send-btn">Send 💌</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const chatBox = document.getElementById('chat-box');
+    const chatForm = document.getElementById('chat-form');
+    const msgInput = document.getElementById('msg-input');
+    const emptyState = document.getElementById('chat-empty');
+
+    function scrollToBottom() {
+      if (chatBox) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+    scrollToBottom();
+
+    // Fill message input from quick love pills
+    window.sendQuick = function(text) {
+      if (msgInput) {
+        msgInput.value = text;
+        msgInput.focus();
+      }
+    };
+
+    // Get the latest message ID
+    function getLastId() {
+      const rows = chatBox.querySelectorAll('.msg-row[data-id]');
+      if (!rows.length) return 0;
+      let maxId = 0;
+      rows.forEach(r => {
+        const id = parseInt(r.getAttribute('data-id'), 10) || 0;
+        if (id > maxId) maxId = id;
+      });
+      return maxId;
+    }
+
+    // Escape HTML to prevent injection
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.innerText = str;
+      return d.innerHTML;
+    }
+
+    // Render an incoming message row
+    function appendMessage(m) {
+      if (emptyState) {
+        emptyState.remove();
+      }
+      if (chatBox.querySelector(`.msg-row[data-id="${m.id}"]`)) {
+        return; // already rendered
+      }
+
+      const row = document.createElement('div');
+      row.className = `msg-row ${m.mine ? 'mine' : 'theirs'}`;
+      row.setAttribute('data-id', m.id);
+
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+
+      let inner = '';
+      if (!m.mine) {
+        inner += `<div class="msg-sender">${escapeHtml(m.name)}</div>`;
+      }
+      inner += `<p class="msg-text">${escapeHtml(m.text)}</p>`;
+      inner += `<div class="msg-meta"><span>${escapeHtml(m.time || 'Just now')}</span>`;
+      if (m.mine) {
+        inner += `<form method="post" action="/messages/${m.id}/delete" style="margin:0; display:inline;" onsubmit="return confirm('Delete this message?');">
+                    <button class="msg-del-btn" title="Delete message" aria-label="Delete message">×</button>
+                  </form>`;
+      }
+      inner += `</div>`;
+      bubble.innerHTML = inner;
+      row.appendChild(bubble);
+      chatBox.appendChild(row);
+      scrollToBottom();
+    }
+
+    // Auto-poll for new messages every 3.5s
+    setInterval(async () => {
+      try {
+        const after = getLastId();
+        const res = await fetch(`/messages/poll?after=${after}`);
+        if (!res.ok) return;
+        const newMsgs = await res.json();
+        if (Array.isArray(newMsgs) && newMsgs.length > 0) {
+          newMsgs.forEach(appendMessage);
+        }
+      } catch (err) {
+        // silent fail
+      }
+    }, 3500);
+
+    // Enhanced async send with instant UI append
+    chatForm.addEventListener('submit', async function(e) {
+      const text = msgInput.value.trim();
+      if (!text) return;
+
+      e.preventDefault();
+      const formData = new FormData(chatForm);
+      msgInput.value = '';
+
+      try {
+        const res = await fetch(chatForm.action, {
+          method: 'POST',
+          body: formData
+        });
+        if (res.ok) {
+          const after = getLastId();
+          const pollRes = await fetch(`/messages/poll?after=${after}`);
+          if (pollRes.ok) {
+            const msgs = await pollRes.json();
+            if (Array.isArray(msgs)) msgs.forEach(appendMessage);
+          }
+        } else {
+          chatForm.submit();
+        }
+      } catch (err) {
+        chatForm.submit();
+      }
+    });
+  })();
+</script>
+{% endblock %}
