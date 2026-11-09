@@ -1,7 +1,7 @@
 {% extends "base.html" %}{% block body %}
 {% set cur = (goal['cur'] + ' ') if goal and goal['cur'] else '' %}
 <div style="margin-bottom: 18px;">
-  <h1>Couple <span class="gradient-text">Savings</span> 💰</h1>
+  <h1>Couple <span class="gradient-text">Savings</span></h1>
   <p class="sub">Building your dreams and shared future together.</p>
 </div>
 
@@ -13,10 +13,12 @@
   <p style="margin: 0 0 6px; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;">{{ goal['name'] }}</p>
   <div class="bar"><i style="width:{{ pct }}%"></i></div>
   <p style="margin: 0; font-size: 0.95rem;">
-    <b>{{ cur }}{{ total|money }}</b> of {{ cur }}{{ goal['target']|money }} · <span style="font-weight:700; color:var(--primary);">{{ pct }}%</span>{{ ' 🎉 Goal achieved!' if pct>=100 }}
+    <b>{{ cur }}{{ total|money }}</b> of {{ cur }}{{ goal['target']|money }} · <span
+      style="font-weight:700; color:var(--primary);">{{ pct }}%</span>{{ ' 🎉 Goal achieved!' if pct>=100 }}
   </p>
   {% for p in per %}
-  <p class="mute" style="margin: 6px 0 0; font-size: 0.88rem;">{{ p['name'] }} contributed {{ cur }}{{ p['total']|money }}</p>
+  <p class="mute" style="margin: 6px 0 0; font-size: 0.88rem;">{{ p['name'] }} contributed {{ cur }}{{ p['total']|money
+    }}</p>
   {% endfor %}
   {% endif %}
 </div>
@@ -31,7 +33,7 @@
     <input type="text" name="note" maxlength="80" placeholder="e.g. Weekly transfer, dinner savings">
 
     <div class="row" style="margin-top: 14px;">
-      <button class="btn">Add contribution 💸</button>
+      <button class="btn">Add contribution</button>
     </div>
   </form>
 </div>
@@ -41,10 +43,12 @@
     <summary style="font-weight: 700; cursor: pointer; color: var(--ink);">Set or update goal</summary>
     <form method="post" action="{{ url_for('savings_goal') }}" style="margin-top: 14px;">
       <label>What are you saving for?</label>
-      <input type="text" name="name" maxlength="60" placeholder="e.g. Japan trip, Wedding fund" value="{{ goal['name'] if goal }}" required>
+      <input type="text" name="name" maxlength="60" placeholder="e.g. Japan trip, Wedding fund"
+        value="{{ goal['name'] if goal }}" required>
 
       <label>Target amount</label>
-      <input type="number" name="target" min="0" step="any" inputmode="decimal" placeholder="5000" value="{{ goal['target'] if goal }}" required>
+      <input type="number" name="target" min="0" step="any" inputmode="decimal" placeholder="5000"
+        value="{{ goal['target'] if goal }}" required>
 
       <label>Currency (optional)</label>
       <input type="text" name="cur" maxlength="6" placeholder="$ or EUR" value="{{ goal['cur'] if goal }}">
@@ -65,10 +69,10 @@
       <span class="who">{{ s['name'] }}</span> · <b>{{ cur }}{{ s['amount']|money }}</b>
       <span class="k" style="margin-left: 6px;">{{ s['date'] }}</span>
       {% if s['user_id']==g.user['id'] %}
-      <form method="post" action="{{ url_for('savings_delete', sid=s['id']) }}" style="display:inline; margin-left: 6px;">
-        <button class="x" aria-label="Delete contribution">×</button>
-      </form>
-      {% endif %}
+    <form method="post" action="{{ url_for('savings_delete', sid=s['id']) }}" style="display:inline; margin-left: 6px;">
+      <button class="x" aria-label="Delete contribution">×</button>
+    </form>
+    {% endif %}
     </p>
     {% if s['note'] %}<p class="mute">{{ s['note'] }}</p>{% endif %}
   </div>

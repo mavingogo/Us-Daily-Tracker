@@ -1,6 +1,6 @@
 /* Us, Daily service worker: makes pages open offline.
    Pages: network first, fall back to the last saved copy. Static files: cached copy first, refreshed in background. */
-const V = 'us-daily-v1';
+const V = 'us-daily-v2';
 const PRE = ['/offline', '/static/app.js', '/static/manifest.json', '/static/icon-192.png', '/static/icon-512.png'];
 const NO_CACHE = /^\/(login|register|pair|logout)/;
 

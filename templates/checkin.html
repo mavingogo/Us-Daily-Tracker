@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block body %}
 <div style="margin-bottom: 18px;">
-  <h1>Tonight’s <span class="gradient-text">Check-in</span> 💌</h1>
+  <h1>Tonight’s <span class="gradient-text">Check In</span></h1>
   <p class="sub">Reflect together and end the day on a sweet note.</p>
 </div>
 
@@ -15,23 +15,26 @@
     </div>
 
     <label>One highlight from today</label>
-    <textarea name="good" maxlength="300" placeholder="Something that made you smile...">{{ mine['good'] if mine }}</textarea>
+    <textarea name="good" maxlength="300"
+      placeholder="Something that made you smile...">{{ mine['good'] if mine }}</textarea>
 
     <label>One thing I appreciated about you</label>
-    <textarea name="thanks" maxlength="300" placeholder="A little appreciation for your partner...">{{ mine['thanks'] if mine }}</textarea>
+    <textarea name="thanks" maxlength="300"
+      placeholder="A little appreciation for your partner...">{{ mine['thanks'] if mine }}</textarea>
 
     <label>One goal or thought for tomorrow</label>
     <textarea name="tmr" maxlength="300" placeholder="Looking ahead to tomorrow...">{{ mine['tmr'] if mine }}</textarea>
 
     <div class="row" style="margin-top: 16px;">
-      <button class="btn">Save check-in ✨</button>
+      <button class="btn">Save check in</button>
     </div>
   </form>
 </div>
 
 <div class="card">
   <h2>Recent reflections</h2>
-  {% if not recent %}<p class="mute" style="margin: 8px 0;">No check-ins yet. Share your first reflection tonight!</p>{% endif %}
+  {% if not recent %}<p class="mute" style="margin: 8px 0;">No check ins yet. Share your first reflection tonight!</p>{%
+  endif %}
   {% for c in recent %}
   <div class="entry {{ 'me' if c['uid']==g.user['id'] else 'her' }}">
     <p style="font-weight: 700;">

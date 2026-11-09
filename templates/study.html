@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block body %}
 <div style="margin-bottom: 18px;">
-  <h1>Study & <span class="gradient-text">Focus</span> 📚</h1>
+  <h1>Study & <span class="gradient-text">Focus</span></h1>
   <p class="sub">Track your deep work and learning sessions together.</p>
 </div>
 
@@ -8,7 +8,8 @@
   <h2>Log a focus session</h2>
   <form method="post" action="{{ url_for('study_add') }}">
     <label>Subject or topic</label>
-    <input type="text" name="subject" maxlength="60" placeholder="e.g. Economics, React, Reading" required autocomplete="off">
+    <input type="text" name="subject" maxlength="60" placeholder="e.g. Economics, React, Reading" required
+      autocomplete="off">
 
     <label>Minutes</label>
     <input type="number" name="minutes" min="1" max="1440" inputmode="numeric" placeholder="45" required>
@@ -17,7 +18,7 @@
     <textarea name="notes" maxlength="300" placeholder="Notes, key takeaways, or achievements..."></textarea>
 
     <div class="row" style="margin-top: 14px;">
-      <button class="btn">Save session ⏱️</button>
+      <button class="btn">Save session </button>
     </div>
   </form>
 </div>
@@ -38,16 +39,18 @@
 
 <div class="card">
   <h2>Today’s sessions</h2>
-  {% if not sessions %}<p class="mute" style="margin: 8px 0;">Nothing logged yet today. Start your first session!</p>{% endif %}
+  {% if not sessions %}<p class="mute" style="margin: 8px 0;">Nothing logged yet today. Start your first session!</p>{%
+  endif %}
   {% for s in sessions %}
   <div class="entry {{ 'me' if s['user_id']==g.user['id'] else 'her' }}">
     <p>
-      <span class="who">{{ s['name'] }}</span> · <b>{{ s['subject'] }}</b> · <span style="color:var(--primary); font-weight:700;">{{ s['minutes']|mins }}</span>
+      <span class="who">{{ s['name'] }}</span> · <b>{{ s['subject'] }}</b> · <span
+        style="color:var(--primary); font-weight:700;">{{ s['minutes']|mins }}</span>
       {% if s['user_id']==g.user['id'] %}
-      <form method="post" action="{{ url_for('study_delete', sid=s['id']) }}" style="display:inline; margin-left: 6px;">
-        <button class="x" aria-label="Delete session">×</button>
-      </form>
-      {% endif %}
+    <form method="post" action="{{ url_for('study_delete', sid=s['id']) }}" style="display:inline; margin-left: 6px;">
+      <button class="x" aria-label="Delete session">×</button>
+    </form>
+    {% endif %}
     </p>
     {% if s['notes'] %}<p class="mute">{{ s['notes'] }}</p>{% endif %}
   </div>
